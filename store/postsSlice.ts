@@ -1,25 +1,26 @@
 // store/postsSlice.ts
 import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
-import { db } from "../lib/firebase";
+import { db } from "@/lib/firebase";
 import {
   collection,
   getDocs,
-  //  addDoc,
   updateDoc,
   deleteDoc,
   doc,
 } from "firebase/firestore";
-import { PostInput } from "../lib/zodSchemas";
+import { PostInput } from "@/lib/zodSchemas";
 import { createPost } from "./thunks";
 
-// Интерфейс одного поста
+// Интерфейс поста
 export interface Post {
   id: string;
   title: string;
   content: string;
+  uid: string;
+  author?: string;
+  createdAt?: number;
 }
 
-// Состояние слайса
 interface PostsState {
   items: Post[];
   loading: boolean;
@@ -32,31 +33,20 @@ const initialState: PostsState = {
   error: null,
 };
 
-/**
- * Загрузка всех постов из Firestore
- */
+// Loading all posts
 export const fetchPosts = createAsyncThunk("posts/fetchAll", async () => {
-  const snap = await getDocs(collection(db, "posts"));
-  return snap.docs.map((d) => ({
-    id: d.id,
-    ...(d.data() as Omit<Post, "id">),
-  })) as Post[];
+  return (await getDocs(collection(db, "posts"))).docs.map((docSnap) => {
+    const data = docSnap.data();
+    return {
+      id: docSnap.id,
+      ...data,
+      // Transforming createdAt → number (timestamp), if there is
+      createdAt: data.createdAt?.toMillis?.() ?? null,
+    } as Post;
+  });
 });
 
-/**
- * Создание нового поста
- */
-//export const createPost = createAsyncThunk(
-//  "posts/create",
-//  async (data: PostInput) => {
-//    const ref = await addDoc(collection(db, "posts"), data);
-//    return { id: ref.id, ...data } as Post;
-//  }
-//);
-
-/**
- * Обновление существующего поста
- */
+// Post update
 export const updatePost = createAsyncThunk(
   "posts/update",
   async ({ id, data }: { id: string; data: PostInput }) => {
@@ -66,9 +56,7 @@ export const updatePost = createAsyncThunk(
   }
 );
 
-/**
- * Видалення поста
- */
+// Deleting a post
 export const deletePost = createAsyncThunk(
   "posts/delete",
   async (id: string) => {
@@ -83,7 +71,6 @@ const postsSlice = createSlice({
   reducers: {},
   extraReducers: (builder) => {
     builder
-      // fetchPosts
       .addCase(fetchPosts.pending, (state) => {
         state.loading = true;
         state.error = null;
@@ -93,19 +80,16 @@ const postsSlice = createSlice({
         state.loading = false;
       })
       .addCase(fetchPosts.rejected, (state, action) => {
-        state.error = action.error.message ?? "Ошибка загрузки";
+        state.error = action.error.message ?? "Download error";
         state.loading = false;
       })
-      // createPost
       .addCase(createPost.fulfilled, (state, action) => {
         state.items.unshift(action.payload);
       })
-      // updatePost
       .addCase(updatePost.fulfilled, (state, action) => {
         const idx = state.items.findIndex((p) => p.id === action.payload.id);
         if (idx !== -1) state.items[idx] = action.payload;
       })
-      // deletePost
       .addCase(deletePost.fulfilled, (state, action) => {
         state.items = state.items.filter((p) => p.id !== action.payload);
       });

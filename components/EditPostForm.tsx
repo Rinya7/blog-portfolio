@@ -39,7 +39,7 @@ export default function EditPostForm({
       await dispatch(updatePost({ id, data: values })).unwrap();
       router.push(`/posts/${id}`);
     } catch (err: unknown) {
-      setErrorMsg(err instanceof Error ? err.message : "Ошибка при обновлении");
+      setErrorMsg(err instanceof Error ? err.message : "Error updating");
     }
   };
 
@@ -48,13 +48,13 @@ export default function EditPostForm({
       {errorMsg && <p className="text-red-600">{errorMsg}</p>}
 
       <div>
-        <label className="block mb-1">Заголовок</label>
+        <label className="block mb-1">Title</label>
         <input {...register("title")} className="w-full p-2 border rounded" />
         {errors.title && <p className="text-red-600">{errors.title.message}</p>}
       </div>
 
       <div>
-        <label className="block mb-1">Зміст</label>
+        <label className="block mb-1">Content</label>
         <textarea
           {...register("content")}
           rows={6}
@@ -70,7 +70,7 @@ export default function EditPostForm({
         disabled={isSubmitting}
         className="px-4 py-2 bg-green-600 text-white rounded disabled:opacity-50"
       >
-        {isSubmitting ? "Зберігаю…" : "Зберегти"}
+        {isSubmitting ? "Saving…" : "Save"}
       </button>
     </form>
   );

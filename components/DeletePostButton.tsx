@@ -8,7 +8,7 @@ import { deletePost } from "@/store/postsSlice";
 
 interface Props {
   id: string;
-  className?: string; // новая пропса
+  className?: string;
 }
 
 export default function DeletePostButton({ id, className = "" }: Props) {
@@ -18,14 +18,17 @@ export default function DeletePostButton({ id, className = "" }: Props) {
   const [error, setError] = useState<string | null>(null);
 
   const handleDelete = async () => {
-    if (!window.confirm("Видалити цей пост назавжди?")) return;
+    if (
+      !window.confirm("Are you sure you want to delete this post permanently?")
+    )
+      return;
     setLoading(true);
     setError(null);
     try {
       await dispatch(deletePost(id)).unwrap();
       router.push("/");
     } catch (err: unknown) {
-      const msg = err instanceof Error ? err.message : "Помилка при видалені";
+      const msg = err instanceof Error ? err.message : "Error while deleting";
       setError(msg);
       setLoading(false);
     }
@@ -45,7 +48,7 @@ export default function DeletePostButton({ id, className = "" }: Props) {
           ${className}
         `}
       >
-        {loading ? "Видаляю…" : "Видалити"}
+        {loading ? "Deleting…" : "Delete"}
       </button>
     </>
   );

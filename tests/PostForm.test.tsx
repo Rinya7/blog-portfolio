@@ -5,7 +5,7 @@ import postsReducer from "../store/postsSlice";
 import { PostForm } from "../components/PostForm";
 import { PostInput } from "../lib/zodSchemas";
 
-// Создаём стор
+// Create stor
 const createTestStore = () =>
   configureStore({
     reducer: {
@@ -16,7 +16,7 @@ const createTestStore = () =>
 // Тип dispatch
 //type AppDispatch = ReturnType<typeof createTestStore>["dispatch"];
 
-// ✅ Мокаем createPost из thunks без any
+// ✅ Mock createPost from thunks
 jest.mock("../store/thunks", () => {
   const actual = jest.requireActual("../store/thunks");
   return {
@@ -50,12 +50,12 @@ describe("PostForm", () => {
     return store;
   };
 
-  it("рендерить и відправляє форму", async () => {
+  it("renders and submits the form", async () => {
     renderWithStore();
 
-    const titleInput = screen.getByPlaceholderText("Введіть заголовок");
-    const contentInput = screen.getByPlaceholderText("Введіть текст поста");
-    const submitBtn = screen.getByRole("button", { name: /створити пост/i });
+    const titleInput = screen.getByPlaceholderText("Enter a title");
+    const contentInput = screen.getByPlaceholderText("Enter the post text");
+    const submitBtn = screen.getByRole("button", { name: /create a post/i });
 
     fireEvent.change(titleInput, { target: { value: "Test" } });
     fireEvent.change(contentInput, { target: { value: "Content here" } });
@@ -67,10 +67,12 @@ describe("PostForm", () => {
     });
   });
 
-  it("Показує помилку валідації", async () => {
+  it("Shows validation error", async () => {
     renderWithStore();
 
-    fireEvent.click(screen.getByRole("button", { name: /створити пост/i }));
-    expect(await screen.findByText(/мінімум 3 символи/i)).toBeInTheDocument();
+    fireEvent.click(screen.getByRole("button", { name: /create a post/i }));
+    expect(
+      await screen.findByText(/minimum 3 characters/i)
+    ).toBeInTheDocument();
   });
 });

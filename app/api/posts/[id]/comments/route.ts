@@ -43,7 +43,7 @@ export async function GET(_request: Request, { params }: AsyncParams) {
   } catch (error) {
     console.error("GET comments error:", error);
     return NextResponse.json(
-      { message: "Не вдалося завантажити коментарій" },
+      { message: "Could not load comment." },
       { status: 500 }
     );
   }
@@ -70,7 +70,7 @@ export async function POST(request: Request, { params }: AsyncParams) {
   } catch (error) {
     console.error("POST comments error:", error);
     return NextResponse.json(
-      { message: "Не вдалося додати коментарій" },
+      { message: "Could not load comment." },
       { status: 500 }
     );
   }

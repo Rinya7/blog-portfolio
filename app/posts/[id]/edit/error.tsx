@@ -10,12 +10,8 @@ export default function EditError({ error }: { error: Error }) {
 
   return (
     <main className="container mx-auto py-10 text-center">
-      <h1 className="text-red-600 text-2xl font-bold mb-4">
-        Помилка редагування
-      </h1>
-      <p className="text-gray-600">
-        Не вдалося завантажити пост для редагування.
-      </p>
+      <h1 className="text-red-600 text-2xl font-bold mb-4">Editing error</h1>
+      <p className="text-gray-600">Failed to load post for editing.</p>
     </main>
   );
 }

@@ -35,7 +35,7 @@ export default async function PostPage({ params }: AsyncParams) {
   try {
     const snap = await getDoc(doc(db, "posts", id));
     if (!snap.exists()) {
-      loadError = "Пост не знайден або видален";
+      loadError = "Post not found or deleted";
     } else {
       const data = snap.data() as { title: string; content: string };
       title = data.title;
@@ -43,7 +43,7 @@ export default async function PostPage({ params }: AsyncParams) {
     }
   } catch (err) {
     console.error(`Error loading post ${id}:`, err);
-    loadError = "Не вдалося завантажити пост";
+    loadError = "Failed to load post.";
   }
 
   if (loadError) {
@@ -54,7 +54,7 @@ export default async function PostPage({ params }: AsyncParams) {
           href="/"
           className="inline-block px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition"
         >
-          На головну
+          To the main page
         </Link>
       </main>
     );
@@ -63,10 +63,10 @@ export default async function PostPage({ params }: AsyncParams) {
   return (
     <main className="container mx-auto p-6">
       <Link href="/" className="  text-white  ">
-        ← до постів
+        ← to posts
       </Link>
       <div className="bg-white dark:bg-gray-800 shadow-lg rounded-lg overflow-hidden">
-        {/* Шапка карточки */}
+        {/* Card cap */}
         <header className="flex flex-col sm:flex-row sm:items-center justify-between px-6 py-4 border-b dark:border-gray-700">
           <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
             {title}
@@ -76,7 +76,7 @@ export default async function PostPage({ params }: AsyncParams) {
               href={`/posts/${id}/edit`}
               className="px-4 py-2 bg-yellow-500 hover:bg-yellow-600 text-white rounded-lg transition text-center"
             >
-              Редагувати
+              Edit
             </Link>
             <DeletePostButton
               id={id}
@@ -84,14 +84,14 @@ export default async function PostPage({ params }: AsyncParams) {
             />
           </div>
         </header>
-        {/* Контент */}
+        {/* Content */}
         <article className="prose prose-lg dark:prose-invert px-6 py-8">
           <p className="text-gray-700 dark:text-gray-300 leading-relaxed">
             {content}
           </p>
         </article>
         <section className="px-6 pb-8 space-y-6">
-          <h2 className="text-2xl font-semibold">Коментарії</h2>
+          <h2 className="text-2xl font-semibold">Comments</h2>
           <CommentsList postId={id} />
           <CommentsForm postId={id} />
         </section>

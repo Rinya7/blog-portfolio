@@ -6,7 +6,7 @@ import { useEffect, useState, useMemo } from "react";
 import { useAppDispatch, useAppSelector } from "../store";
 import { fetchPosts } from "../store/postsSlice";
 
-/** Хук debounce */
+/** Hook debounce */
 function useDebounce<T>(value: T, delay = 300): T {
   const [debounced, setDebounced] = useState(value);
   useEffect(() => {
@@ -21,14 +21,14 @@ export function PostList() {
   const { items, loading, error } = useAppSelector((s) => s.posts);
 
   const [query, setQuery] = useState("");
-  // задерживаем query на 300 мс
+  // delay query на 300 мс
   const debouncedQuery = useDebounce(query, 300);
 
   useEffect(() => {
     dispatch(fetchPosts());
   }, [dispatch]);
 
-  // Фильтрация — теперь по debouncedQuery
+  // Filter by debouncedQuery
   const filtered = useMemo(() => {
     if (!debouncedQuery) return items;
     const q = debouncedQuery.trim().toLowerCase();
@@ -40,18 +40,16 @@ export function PostList() {
   }, [items, debouncedQuery]);
 
   if (loading)
-    return <div className="text-center py-10 text-gray-500">Завантаження…</div>;
+    return <div className="text-center py-10 text-gray-500">Loading...</div>;
   if (error)
-    return (
-      <div className="text-center py-10 text-red-600">Помилка: {error}</div>
-    );
+    return <div className="text-center py-10 text-red-600">Error: {error}</div>;
 
   return (
     <div className="space-y-6">
       <div className="max-w-xl mx-auto">
         <input
           type="text"
-          placeholder="Пошук..."
+          placeholder="Search..."
           value={query}
           onChange={(e) => setQuery(e.target.value)}
           className="w-full p-3 border rounded-lg bg-gray-50 dark:bg-gray-700 focus:ring-2 focus:ring-blue-400"
@@ -60,7 +58,7 @@ export function PostList() {
 
       <ul className="space-y-6">
         {filtered.length === 0 ? (
-          <li className="text-center text-gray-500">Нічого не знайдено</li>
+          <li className="text-center text-gray-500">Nothing found</li>
         ) : (
           filtered.map((post) => (
             <li key={post.id}>
@@ -78,9 +76,18 @@ export function PostList() {
                     ? post.content.slice(0, 200) + "…"
                     : post.content}
                 </p>
+                <p className="text-sm text-gray-500 px-6 pb-2">
+                  Author: {post.author || "Anonymous"}
+                </p>
+                <p className="text-xs text-gray-400 px-6 pb-2">
+                  📅{" "}
+                  {post.createdAt
+                    ? new Date(post.createdAt).toLocaleString("uk-UA")
+                    : "No date"}
+                </p>
                 <div className="px-6 pb-4">
                   <span className="text-blue-600 hover:underline">
-                    Читати далі →
+                    Read more →
                   </span>
                 </div>
               </Link>

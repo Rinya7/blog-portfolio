@@ -3,7 +3,7 @@ import { collection, getDocs, query, orderBy } from "firebase/firestore";
 import { db } from "@/lib/firebase";
 
 export default async function CommentsList({ postId }: { postId: string }) {
-  // SSR: подгружаем комментарии
+  // SSR: upload comments
   const q = query(
     collection(db, "posts", postId, "comments"),
     orderBy("createdAt", "asc")
@@ -15,7 +15,9 @@ export default async function CommentsList({ postId }: { postId: string }) {
   }));
 
   if (comments.length === 0) {
-    return <p className="text-center text-gray-500">Пока нет комментариев</p>;
+    return (
+      <p className="text-center text-gray-500">There are no comments yet</p>
+    );
   }
 
   return (

@@ -22,7 +22,7 @@ export default function CommentsForm({ postId }: { postId: string }) {
       body: JSON.stringify(data),
     });
     reset();
-    router.refresh(); // обновляем серверную часть (CommentsList)
+    router.refresh(); // we update the server part (CommentsList)
   };
 
   return (
@@ -51,7 +51,7 @@ export default function CommentsForm({ postId }: { postId: string }) {
         disabled={isSubmitting}
         className="px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg"
       >
-        {isSubmitting ? "Зберігаю…" : "Залишити коментарій"}
+        {isSubmitting ? "Saving..." : "Submit comment"}
       </button>
     </form>
   );

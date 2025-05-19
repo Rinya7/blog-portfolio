@@ -11,9 +11,9 @@ export default function RootError({ error }: { error: Error }) {
   return (
     <main className="container mx-auto py-10 text-center">
       <h1 className="text-red-600 text-2xl font-bold mb-4">
-        Упс! Щось пішло не так
+        Oops! Something went wrong.
       </h1>
-      <p className="text-gray-600">Будь ласка, спробуйте пізніше.</p>
+      <p className="text-gray-600">Please try again later.</p>
     </main>
   );
 }
