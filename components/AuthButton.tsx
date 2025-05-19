@@ -1,7 +1,8 @@
 // components/AuthButton.tsx
-import { signInWithPopup, signOut } from "firebase/auth";
-import { auth, provider } from "@/lib/firebase";
+import { GoogleAuthProvider, signInWithPopup, signOut } from "firebase/auth";
+import { auth } from "@/lib/firebase";
 import { useAuth } from "@/hooks/useAuth";
+const provider = new GoogleAuthProvider();
 
 export function AuthButton() {
   const { user, loading } = useAuth();

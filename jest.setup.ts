@@ -1,2 +1,5 @@
 // jest.setup.ts
-import "@testing-library/jest-dom";
+import dotenv from "dotenv";
+
+// Загружаем .env.test только для тестов
+dotenv.config({ path: ".env.test" });

@@ -55,7 +55,7 @@ describe("PostForm", () => {
 
     const titleInput = screen.getByPlaceholderText("Enter a title");
     const contentInput = screen.getByPlaceholderText("Enter the post text");
-    const submitBtn = screen.getByRole("button", { name: /create a post/i });
+    const submitBtn = screen.getByRole("button", { name: /create post/i });
 
     fireEvent.change(titleInput, { target: { value: "Test" } });
     fireEvent.change(contentInput, { target: { value: "Content here" } });
@@ -70,9 +70,9 @@ describe("PostForm", () => {
   it("Shows validation error", async () => {
     renderWithStore();
 
-    fireEvent.click(screen.getByRole("button", { name: /create a post/i }));
+    fireEvent.click(screen.getByRole("button", { name: /create post/i }));
     expect(
-      await screen.findByText(/minimum 3 characters/i)
+      await screen.findByText(/at least 3 characters/i)
     ).toBeInTheDocument();
   });
 });

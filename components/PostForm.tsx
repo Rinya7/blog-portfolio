@@ -65,7 +65,7 @@ export function PostForm() {
           </label>
           <input
             {...register("title")}
-            placeholder="Введіть заголовок"
+            placeholder="Enter a title"
             className="w-full p-3 border rounded-lg bg-gray-50 dark:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
           />
           {errors.title && (
@@ -79,7 +79,7 @@ export function PostForm() {
           </label>
           <textarea
             {...register("content")}
-            placeholder="Введіть текст поста"
+            placeholder="Enter the post text"
             rows={6}
             className="w-full p-3 border rounded-lg bg-gray-50 dark:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
           />
