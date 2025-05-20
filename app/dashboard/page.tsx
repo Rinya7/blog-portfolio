@@ -1,11 +1,10 @@
-import { withAuth } from "@/components/withAuth";
+import dynamic from "next/dynamic";
 
-function DashboardContent() {
-  return <div>👋 This is your personal account.</div>;
-}
-
-const DashboardPage = withAuth(DashboardContent);
+// Динамически импортируем компонент с "use client"
+const DashboardClient = dynamic(() => import("./dashboard-client"), {
+  ssr: false,
+});
 
 export default function Page() {
-  return <DashboardPage />;
+  return <DashboardClient />;
 }
