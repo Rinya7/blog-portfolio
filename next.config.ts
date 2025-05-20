@@ -2,11 +2,8 @@ import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
   experimental: {
-    optimizeCss: false
+    optimizeCss: false,
   },
-  compiler: {
-    cssMinifier: 'parcel'
-  }
 };
 
 export default nextConfig;
