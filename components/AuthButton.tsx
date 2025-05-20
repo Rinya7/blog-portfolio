@@ -30,8 +30,9 @@ export function AuthButton() {
       onClick={async () => {
         try {
           await signInWithPopup(auth, provider);
-        } catch (err: any) {
-          console.warn("Login canceled or failed", err.message);
+        } catch (err: unknown) {
+          const error = err as { message?: string };
+          console.warn("Login canceled or failed", error.message);
         }
       }}
       className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded"

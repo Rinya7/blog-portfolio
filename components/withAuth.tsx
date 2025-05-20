@@ -19,7 +19,7 @@ export function withAuth<P extends JSX.IntrinsicAttributes>(
           `/login?redirect=${encodeURIComponent(window.location.pathname)}`
         );
       }
-    }, [loading, user]);
+    }, [loading, user, router]);
 
     if (!user) return <div>Checking authentication...</div>;
 
