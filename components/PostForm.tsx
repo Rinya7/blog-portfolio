@@ -36,7 +36,7 @@ export function PostForm() {
   const onSubmit = async (data: PostInput) => {
     setLocalError(null);
     try {
-      await dispatch(createPost(data)).unwrap();
+      await dispatch(createPost(data));
       reset();
     } catch (err: unknown) {
       setLocalError(getErrorMessage(err) || "Error sending");

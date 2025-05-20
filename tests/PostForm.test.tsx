@@ -1,34 +1,28 @@
-import { render, screen, fireEvent, waitFor } from "@testing-library/react";
-import { Provider } from "react-redux";
-import { configureStore } from "@reduxjs/toolkit";
-import postsReducer from "../store/postsSlice";
-import { PostForm } from "../components/PostForm";
-import { PostInput } from "../lib/zodSchemas";
+// tests/PostForm.test.tsx
 
-// Create stor
-const createTestStore = () =>
-  configureStore({
-    reducer: {
-      posts: postsReducer,
-    },
-  });
-
-// Тип dispatch
-//type AppDispatch = ReturnType<typeof createTestStore>["dispatch"];
-
-// ✅ Mock createPost from thunks
+// 1) inline-мок ДО будь-яких імпортів:
 jest.mock("../store/thunks", () => {
-  const actual = jest.requireActual("../store/thunks");
+  const original = jest.requireActual("../store/thunks");
   return {
-    ...actual,
+    __esModule: true,
+    ...original,
+    // замінюємо тільки createPost на jest.fn
     createPost: Object.assign(
-      (data: PostInput) => {
-        return {
-          type: "posts/create",
-          payload: { id: "mock-id", ...data },
-          unwrap: async () => ({ id: "mock-id", ...data }),
+      jest.fn((data) => {
+        // цей thunk виконається під dispatch(...)
+        return async (_dispatch: any) => {
+          const result = {
+            id: "mock-id",
+            ...data,
+            uid: "mock-user-id",
+            author: "Test User",
+          };
+          return {
+            ...result,
+            unwrap: async () => result,
+          };
         };
-      },
+      }),
       {
         type: "posts/create",
         fulfilled: { type: "posts/create/fulfilled" },
@@ -37,39 +31,61 @@ jest.mock("../store/thunks", () => {
   };
 });
 
-describe("PostForm", () => {
-  const renderWithStore = () => {
-    const store = createTestStore();
+// 2) Тепер імпорти (після мок):
+import { render, screen, fireEvent, waitFor } from "@testing-library/react";
+import { Provider } from "react-redux";
+import { configureStore } from "@reduxjs/toolkit";
+import postsReducer from "../store/postsSlice";
+import { PostForm } from "../components/PostForm";
+import { createPost } from "../store/thunks"; // ← це зараз jest.fn!
 
+// 3) Тестовий стор:
+const createTestStore = () =>
+  configureStore({
+    reducer: { posts: postsReducer },
+    middleware: (getDefaultMiddleware) =>
+      getDefaultMiddleware({ serializableCheck: false }),
+  });
+
+describe("PostForm", () => {
+  const renderWithStore = () =>
     render(
-      <Provider store={store}>
+      <Provider store={createTestStore()}>
         <PostForm />
       </Provider>
     );
 
-    return store;
-  };
-
   it("renders and submits the form", async () => {
     renderWithStore();
 
-    const titleInput = screen.getByPlaceholderText("Enter a title");
-    const contentInput = screen.getByPlaceholderText("Enter the post text");
-    const submitBtn = screen.getByRole("button", { name: /create post/i });
+    // заповнюємо поля:
+    fireEvent.change(screen.getByPlaceholderText("Enter a title"), {
+      target: { value: "Test Title" },
+    });
+    fireEvent.change(screen.getByPlaceholderText("Enter the post text"), {
+      target: { value: "Test content here" },
+    });
 
-    fireEvent.change(titleInput, { target: { value: "Test" } });
-    fireEvent.change(contentInput, { target: { value: "Content here" } });
-    fireEvent.click(submitBtn);
+    // клікаємо submit
+    fireEvent.click(screen.getByRole("button", { name: /create post/i }));
 
+    // чекаємо, що інпути очистяться
     await waitFor(() => {
-      expect(titleInput).toHaveValue("");
-      expect(contentInput).toHaveValue("");
+      expect(screen.getByPlaceholderText("Enter a title")).toHaveValue("");
+      expect(screen.getByPlaceholderText("Enter the post text")).toHaveValue(
+        ""
+      );
+    });
+
+    // перевіряємо, що mock createPost був викликаний
+    expect(createPost).toHaveBeenCalledWith({
+      title: "Test Title",
+      content: "Test content here",
     });
   });
 
-  it("Shows validation error", async () => {
+  it("shows validation error if fields empty", async () => {
     renderWithStore();
-
     fireEvent.click(screen.getByRole("button", { name: /create post/i }));
     expect(
       await screen.findByText(/at least 3 characters/i)
