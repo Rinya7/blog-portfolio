@@ -1,7 +1,11 @@
 import { withAuth } from "@/components/withAuth";
 
-function DashboardPage() {
+function DashboardContent() {
   return <div>👋 This is your personal account.</div>;
 }
 
-export default withAuth(DashboardPage);
+const DashboardPage = withAuth(DashboardContent);
+
+export default function Page() {
+  return <DashboardPage />;
+}
