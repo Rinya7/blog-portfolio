@@ -1,9 +1,6 @@
 import dynamic from "next/dynamic";
 
-// Динамически импортируем компонент с "use client"
-const DashboardClient = dynamic(() => import("./dashboard-client"), {
-  ssr: false,
-});
+const DashboardClient = dynamic(() => import("./dashboard-client"));
 
 export default function Page() {
   return <DashboardClient />;
