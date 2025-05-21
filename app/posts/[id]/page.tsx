@@ -71,7 +71,7 @@ export default async function PostPage({ params }: AsyncParams) {
           <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
             {title}
           </h1>
-          <div className="mt-4 sm:mt-0 flex flex-col sm:flex-row sm:space-x-3 space-y-2 sm:space-y-0 w-full sm:w-auto">
+          <div className="  mt-4 sm:mt-0 flex flex-col sm:flex-row sm:space-x-3 space-y-2 sm:space-y-0 w-full sm:w-auto">
             <Link
               href={`/posts/${id}/edit`}
               className="px-4 py-2 bg-yellow-500 hover:bg-yellow-600 text-white rounded-lg transition text-center"
@@ -86,7 +86,7 @@ export default async function PostPage({ params }: AsyncParams) {
         </header>
         {/* Content */}
         <article className="prose prose-lg dark:prose-invert px-6 py-8">
-          <p className="text-gray-700 dark:text-gray-300 leading-relaxed">
+          <p className="content text-gray-700 dark:text-gray-300 leading-relaxed">
             {content}
           </p>
         </article>

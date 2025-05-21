@@ -8,6 +8,7 @@ import { PostInput, PostInputSchema } from "@/lib/zodSchemas";
 import { useAppDispatch } from "@/store";
 import { updatePost } from "@/store/postsSlice";
 import { useRouter } from "next/navigation";
+import TextareaAutosize from "react-textarea-autosize";
 
 interface Props {
   id: string;
@@ -44,7 +45,7 @@ export default function EditPostForm({
   };
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="max-w-xl space-y-4">
+    <form onSubmit={handleSubmit(onSubmit)} className="max-w-xl space-y-4 ">
       {errorMsg && <p className="text-red-600">{errorMsg}</p>}
 
       <div>
@@ -55,10 +56,9 @@ export default function EditPostForm({
 
       <div>
         <label className="block mb-1">Content</label>
-        <textarea
+        <TextareaAutosize
           {...register("content")}
-          rows={6}
-          className="w-full p-2 border rounded"
+          className="content w-full p-2 border rounded  "
         />
         {errors.content && (
           <p className="text-red-600">{errors.content.message}</p>

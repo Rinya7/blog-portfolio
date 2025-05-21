@@ -71,7 +71,7 @@ export function PostList() {
                     {post.title}
                   </h2>
                 </header>
-                <p className="px-6 py-4 text-gray-700 dark:text-gray-300 leading-relaxed">
+                <p className="content px-6 py-4 text-gray-700 dark:text-gray-300 leading-relaxed">
                   {post.content.length > 200
                     ? post.content.slice(0, 200) + "…"
                     : post.content}

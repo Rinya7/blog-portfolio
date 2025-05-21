@@ -81,7 +81,7 @@ export function PostForm() {
             {...register("content")}
             placeholder="Enter the post text"
             rows={6}
-            className="w-full p-3 border rounded-lg bg-gray-50 dark:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="content w-full p-3 border rounded-lg bg-gray-50 dark:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
           />
           {errors.content && (
             <p className="mt-1 text-red-600">{errors.content.message}</p>
