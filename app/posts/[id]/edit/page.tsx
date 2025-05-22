@@ -4,6 +4,7 @@ import { Metadata } from "next";
 import { db } from "@/lib/firebase";
 import EditPostForm from "@/components/EditPostForm";
 import Link from "next/link";
+import ClientSideAuthCheck from "@/components/ClientSideAuthCheck";
 
 interface AsyncParams {
   params: Promise<{ id: string }>;
@@ -36,17 +37,23 @@ export default async function EditPostPage({ params }: AsyncParams) {
   }
 
   // We transfer the current title and content to the form
-  const data = snap.data() as { title: string; content: string };
+  const data = snap.data() as {
+    title: string;
+    content: string;
+    authorId: string;
+  };
 
   return (
     <main className="container mx-auto p-6">
       <h1 className="text-3xl font-bold mb-6">Edit post</h1>
-      {/*Client form  @ts-expect-error Async Server Component */}
-      <EditPostForm
-        id={id}
-        initialTitle={data.title}
-        initialContent={data.content}
-      />
+      <ClientSideAuthCheck authorId={data.authorId}>
+        {/*Client form  @ts-expect-error Async Server Component */}
+        <EditPostForm
+          id={id}
+          initialTitle={data.title}
+          initialContent={data.content}
+        />
+      </ClientSideAuthCheck>
     </main>
   );
 }

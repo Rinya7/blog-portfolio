@@ -1,22 +1,12 @@
-// store/postsSlice.ts
 import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
-import { db } from "@/lib/firebase";
-import {
-  collection,
-  getDocs,
-  updateDoc,
-  deleteDoc,
-  doc,
-} from "firebase/firestore";
-import { PostInput } from "@/lib/zodSchemas";
-import { createPost } from "./thunks";
+import { createPost, updatePost, deletePost } from "./thunks";
 
-// Интерфейс поста
+// Post model
 export interface Post {
   id: string;
   title: string;
   content: string;
-  uid: string;
+  authorId: string;
   author?: string;
   createdAt?: number;
 }
@@ -33,37 +23,17 @@ const initialState: PostsState = {
   error: null,
 };
 
-// Loading all posts
+// Fetch all posts via API
 export const fetchPosts = createAsyncThunk("posts/fetchAll", async () => {
-  return (await getDocs(collection(db, "posts"))).docs.map((docSnap) => {
-    const data = docSnap.data();
-    return {
-      id: docSnap.id,
-      ...data,
-      // Transforming createdAt → number (timestamp), if there is
-      createdAt: data.createdAt?.toMillis?.() ?? null,
-    } as Post;
-  });
+  const res = await fetch("/api/posts");
+
+  if (!res.ok) {
+    throw new Error("Failed to fetch posts");
+  }
+
+  const posts = await res.json();
+  return posts as Post[];
 });
-
-// Post update
-export const updatePost = createAsyncThunk(
-  "posts/update",
-  async ({ id, data }: { id: string; data: PostInput }) => {
-    const docRef = doc(db, "posts", id);
-    await updateDoc(docRef, data);
-    return { id, ...data } as Post;
-  }
-);
-
-// Deleting a post
-export const deletePost = createAsyncThunk(
-  "posts/delete",
-  async (id: string) => {
-    await deleteDoc(doc(db, "posts", id));
-    return id;
-  }
-);
 
 const postsSlice = createSlice({
   name: "posts",
@@ -97,4 +67,4 @@ const postsSlice = createSlice({
 });
 
 export default postsSlice.reducer;
-export { createPost };
+export { createPost, updatePost, deletePost };

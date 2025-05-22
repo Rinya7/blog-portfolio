@@ -1,4 +1,3 @@
-// components/PostForm.tsx
 "use client";
 
 import { useState } from "react";
@@ -6,8 +5,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { PostInput, PostInputSchema } from "@/lib/zodSchemas";
 import { useAppDispatch, useAppSelector } from "@/store";
-//import { createPost } from "@/store/postsSlice";
-import { createPost } from "../store/thunks";
+import { createPost } from "@/store/thunks";
 
 function getErrorMessage(err: unknown): string {
   if (err instanceof Error) return err.message;

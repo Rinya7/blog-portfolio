@@ -1,32 +1,102 @@
-// store/thunks.ts
 import { createAsyncThunk } from "@reduxjs/toolkit";
-import { db } from "@/lib/firebase";
 import { PostInput } from "@/lib/zodSchemas";
-import { addDoc, collection, serverTimestamp } from "firebase/firestore";
+import { auth } from "@/lib/firebase";
 import { Post } from "./postsSlice";
-import { getAuth } from "firebase/auth";
 
-export const createPost = createAsyncThunk(
-  "posts/create",
-  async (data: PostInput) => {
-    const auth = getAuth();
+// Create Post
+export const createPost = createAsyncThunk<
+  Post,
+  PostInput,
+  { rejectValue: string }
+>("posts/create", async (data, { rejectWithValue }) => {
+  try {
     const user = auth.currentUser;
+    if (!user) throw new Error("User is not authorized");
 
-    if (!user) throw new Error("User is not authorized.");
+    const token = await user.getIdToken();
 
-    const docRef = await addDoc(collection(db, "posts"), {
-      ...data,
-      uid: user.uid,
-      author: user.displayName ?? "Anonymous",
-      createdAt: serverTimestamp(), // timestamp у Firestore
+    const res = await fetch("/api/posts", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify(data),
     });
 
-    return {
-      id: docRef.id,
-      ...data,
-      uid: user.uid,
-      author: user.displayName ?? "Anonymous",
-      createdAt: Date.now(),
-    } as Post;
+    if (!res.ok) {
+      const errData = await res.json();
+      return rejectWithValue(errData.message || "Failed to create post");
+    }
+
+    const result = (await res.json()) as Post;
+    return result;
+  } catch (err: unknown) {
+    if (err instanceof Error) return rejectWithValue(err.message);
+    return rejectWithValue("Unknown error");
   }
-);
+});
+
+// Update Post
+export const updatePost = createAsyncThunk<
+  Post,
+  { id: string; data: PostInput },
+  { rejectValue: string }
+>("posts/update", async ({ id, data }, { rejectWithValue }) => {
+  try {
+    const user = auth.currentUser;
+    if (!user) throw new Error("User is not authorized");
+
+    const token = await user.getIdToken();
+
+    const res = await fetch(`/api/posts/${id}`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify(data),
+    });
+
+    if (!res.ok) {
+      const errData = await res.json();
+      return rejectWithValue(errData.message || "Failed to update post");
+    }
+
+    return (await res.json()) as Post;
+  } catch (err: unknown) {
+    if (err instanceof Error) return rejectWithValue(err.message);
+    return rejectWithValue("Unknown error");
+  }
+});
+
+// Delete Post
+export const deletePost = createAsyncThunk<
+  string,
+  string,
+  { rejectValue: string }
+>("posts/delete", async (id, { rejectWithValue }) => {
+  try {
+    const user = auth.currentUser;
+    if (!user) throw new Error("User is not authorized");
+
+    const token = await user.getIdToken();
+
+    const res = await fetch(`/api/posts/${id}`, {
+      method: "DELETE",
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    if (!res.ok) {
+      const errData = await res.json();
+      return rejectWithValue(errData.message || "Failed to delete post");
+    }
+
+    return id;
+  } catch (err: unknown) {
+    if (err instanceof Error) return rejectWithValue(err.message);
+    return rejectWithValue("Unknown error");
+  }
+});

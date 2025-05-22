@@ -4,9 +4,10 @@ import { Metadata } from "next";
 import { doc, getDoc } from "firebase/firestore";
 import { db } from "@/lib/firebase";
 import Link from "next/link";
-import DeletePostButton from "@/components/DeletePostButton";
+
 import CommentsList from "@/components/CommentsList";
 import CommentsForm from "@/components/CommentsForm";
+import PostActionsWrapper from "@/components/PostActionsWrapper";
 
 interface AsyncParams {
   params: Promise<{ id: string }>;
@@ -30,6 +31,7 @@ export default async function PostPage({ params }: AsyncParams) {
   const { id } = await params;
   let title = "";
   let content = "";
+  let authorId = "";
   let loadError: string | null = null;
 
   try {
@@ -37,9 +39,14 @@ export default async function PostPage({ params }: AsyncParams) {
     if (!snap.exists()) {
       loadError = "Post not found or deleted";
     } else {
-      const data = snap.data() as { title: string; content: string };
+      const data = snap.data() as {
+        title: string;
+        content: string;
+        authorId: string;
+      };
       title = data.title;
       content = data.content;
+      authorId = data.authorId;
     }
   } catch (err) {
     console.error(`Error loading post ${id}:`, err);
@@ -62,7 +69,7 @@ export default async function PostPage({ params }: AsyncParams) {
 
   return (
     <main className="container mx-auto p-6">
-      <Link href="/" className="  text-white  ">
+      <Link href="/" className="  text-gray-900 dark:text-white ">
         ← to posts
       </Link>
       <div className="bg-white dark:bg-gray-800 shadow-lg rounded-lg overflow-hidden">
@@ -71,18 +78,8 @@ export default async function PostPage({ params }: AsyncParams) {
           <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
             {title}
           </h1>
-          <div className="  mt-4 sm:mt-0 flex flex-col sm:flex-row sm:space-x-3 space-y-2 sm:space-y-0 w-full sm:w-auto">
-            <Link
-              href={`/posts/${id}/edit`}
-              className="px-4 py-2 bg-yellow-500 hover:bg-yellow-600 text-white rounded-lg transition text-center"
-            >
-              Edit
-            </Link>
-            <DeletePostButton
-              id={id}
-              className="w-full sm:w-auto text-center"
-            />
-          </div>
+
+          <PostActionsWrapper postId={id} authorId={authorId} />
         </header>
         {/* Content */}
         <article className="prose prose-lg dark:prose-invert px-6 py-8">
