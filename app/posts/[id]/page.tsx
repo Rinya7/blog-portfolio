@@ -68,7 +68,7 @@ export default async function PostPage({ params }: AsyncParams) {
   }
 
   return (
-    <main className="container mx-auto p-6">
+    <div className="max-w-2xl mx-auto">
       <Link href="/" className="  text-gray-900 dark:text-white ">
         ← to posts
       </Link>
@@ -93,6 +93,6 @@ export default async function PostPage({ params }: AsyncParams) {
           <CommentsForm postId={id} />
         </section>
       </div>
-    </main>
+    </div>
   );
 }

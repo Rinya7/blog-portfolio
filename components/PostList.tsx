@@ -45,8 +45,8 @@ export function PostList() {
     return <div className="text-center py-10 text-red-600">Error: {error}</div>;
 
   return (
-    <div className="space-y-6">
-      <div className="max-w-xl mx-auto">
+    <div className="max-w-2xl mx-auto">
+      <div className="max-w-2xl mx-auto mb-4">
         <input
           type="text"
           placeholder="Search..."

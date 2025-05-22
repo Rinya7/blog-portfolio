@@ -44,7 +44,7 @@ export default async function EditPostPage({ params }: AsyncParams) {
   };
 
   return (
-    <main className="container mx-auto p-6">
+    <div className="max-w-2xl mx-auto">
       <h1 className="text-3xl font-bold mb-6">Edit post</h1>
       <ClientSideAuthCheck authorId={data.authorId}>
         {/*Client form  @ts-expect-error Async Server Component */}
@@ -54,6 +54,6 @@ export default async function EditPostPage({ params }: AsyncParams) {
           initialContent={data.content}
         />
       </ClientSideAuthCheck>
-    </main>
+    </div>
   );
 }
