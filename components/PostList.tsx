@@ -16,7 +16,7 @@ function useDebounce<T>(value: T, delay = 300): T {
   return debounced;
 }
 
-export function PostList() {
+export default function PostList() {
   const dispatch = useAppDispatch();
   const { items, loading, error } = useAppSelector((s) => s.posts);
 

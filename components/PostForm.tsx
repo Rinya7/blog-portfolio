@@ -17,7 +17,7 @@ function getErrorMessage(err: unknown): string {
   }
 }
 
-export function PostForm() {
+export default function PostForm() {
   const dispatch = useAppDispatch();
   const { error: createError } = useAppSelector((s) => s.posts);
   const [localError, setLocalError] = useState<string | null>(null);
