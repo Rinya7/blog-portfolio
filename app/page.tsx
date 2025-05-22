@@ -1,10 +1,6 @@
-"use client";
-import { auth } from "@/lib/firebase";
-
 import { PostForm } from "@/components/PostForm";
 import { PostList } from "@/components/PostList";
 import { useAuth } from "@/hooks/useAuth";
-import { signOut } from "firebase/auth";
 
 export default function HomePage() {
   const { user, loading } = useAuth();
