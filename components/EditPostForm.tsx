@@ -66,6 +66,12 @@ export default function EditPostForm({
     }
   };
 
+  // Новая функция для кнопки Отмена
+  const onCancel = () => {
+    router.back(); // вернуться на предыдущую страницу
+    // Или можно сделать router.push(`/posts/${id}`) чтобы перейти на страницу просмотра
+  };
+
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
       {error && <p className="text-red-600">{error}</p>}
@@ -90,16 +96,25 @@ export default function EditPostForm({
           <p className="text-red-500">{errors.content.message}</p>
         )}
       </div>
-
-      <button
-        type="submit"
-        disabled={loading}
-        className={`px-6 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition ${
-          loading ? "opacity-50" : ""
-        }`}
-      >
-        {loading ? "Updating…" : "Update Post"}
-      </button>
+      <div className="flex justify-around items-center">
+        <button
+          type="submit"
+          disabled={loading}
+          className={`px-6 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition  ${
+            loading ? "opacity-50" : ""
+          }`}
+        >
+          {loading ? "Updating…" : "Update Post"}
+        </button>
+        <button
+          type="button"
+          onClick={onCancel}
+          disabled={loading}
+          className="px-6 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition"
+        >
+          Cancel
+        </button>
+      </div>
     </form>
   );
 }

@@ -75,7 +75,7 @@ export default async function PostPage({ params }: AsyncParams) {
       <div className="bg-white dark:bg-gray-800 shadow-lg rounded-lg overflow-hidden">
         {/* Card cap */}
         <header className="flex flex-col sm:flex-row sm:items-center justify-between px-6 py-4 border-b dark:border-gray-700">
-          <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
+          <h1 className="text-3xl font-bold text-gray-900 dark:text-white text-center  md:px-8">
             {title}
           </h1>
 
@@ -88,7 +88,7 @@ export default async function PostPage({ params }: AsyncParams) {
           </p>
         </article>
         <section className="px-6 pb-8 space-y-6">
-          <h2 className="text-2xl font-semibold">Comments</h2>
+          <h2 className="text-2xl font-semibold text-yellow-200">Comments</h2>
           <CommentsList postId={id} />
           <CommentsForm postId={id} />
         </section>
