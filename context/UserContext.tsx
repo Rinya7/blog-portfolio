@@ -1,5 +1,5 @@
-// src/context/UserContext.tsx
-"use client";
+context / UserContext.tsx;
+("use client");
 
 import React, { createContext, useContext } from "react";
 import { useAuth } from "@/hooks/useAuth";

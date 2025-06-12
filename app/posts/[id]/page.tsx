@@ -4,7 +4,7 @@ import { Metadata } from "next";
 import { doc, getDoc } from "firebase/firestore";
 import { db } from "@/lib/firebase";
 import Link from "next/link";
-
+import { notFound } from "next/navigation";
 import CommentsList from "@/components/CommentsList";
 import CommentsForm from "@/components/CommentsForm";
 import PostActionsWrapper from "@/components/PostActionsWrapper";
@@ -32,39 +32,23 @@ export default async function PostPage({ params }: AsyncParams) {
   let title = "";
   let content = "";
   let authorId = "";
-  let loadError: string | null = null;
 
   try {
     const snap = await getDoc(doc(db, "posts", id));
     if (!snap.exists()) {
-      loadError = "Post not found or deleted";
-    } else {
-      const data = snap.data() as {
-        title: string;
-        content: string;
-        authorId: string;
-      };
-      title = data.title;
-      content = data.content;
-      authorId = data.authorId;
+      notFound();
     }
+    const data = snap.data() as {
+      title: string;
+      content: string;
+      authorId: string;
+    };
+    title = data.title;
+    content = data.content;
+    authorId = data.authorId;
   } catch (err) {
     console.error(`Error loading post ${id}:`, err);
-    loadError = "Failed to load post.";
-  }
-
-  if (loadError) {
-    return (
-      <main className="container mx-auto p-6 text-center">
-        <p className="text-red-500 mb-6">{loadError}</p>
-        <Link
-          href="/"
-          className="inline-block px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition"
-        >
-          To the main page
-        </Link>
-      </main>
-    );
+    throw new Error("Failed to load post");
   }
 
   return (
