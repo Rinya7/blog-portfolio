@@ -46,13 +46,13 @@ export default function PostForm() {
       onSubmit={handleSubmit(onSubmit)}
       className="max-w-2xl mx-auto bg-white dark:bg-gray-800 shadow-lg rounded-lg overflow-hidden"
     >
-      <div className="px-6 py-4 border-b dark:border-gray-700">
+      <div className="px-6 py-4 border-b dark:border-gray-700 ">
         <h2 className="text-2xl font-semibold text-gray-900 dark:text-gray-100">
           Create new Post
         </h2>
       </div>
 
-      <div className="px-6 py-4 space-y-4">
+      <div className="px-6 py-4 space-y-4  ">
         {(createError || localError) && (
           <p className="text-red-600">{localError ?? createError}</p>
         )}

@@ -28,8 +28,10 @@ export default function PostList() {
   const debouncedQuery = useDebounce(query, 300);
 
   useEffect(() => {
-    dispatch(fetchPosts());
-  }, [dispatch]);
+    if (items.length === 0 && !loading) {
+      dispatch(fetchPosts());
+    }
+  }, [dispatch, loading, items.length]);
 
   // Filter by debouncedQuery
   const filtered = useMemo(() => {
