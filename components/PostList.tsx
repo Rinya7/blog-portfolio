@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useEffect, useState, useMemo } from "react";
 import { useAppDispatch, useAppSelector } from "../store";
 import { fetchPosts } from "../store/postsSlice";
+import { useRouter } from "next/navigation";
 
 /** Hook debounce */
 function useDebounce<T>(value: T, delay = 300): T {
@@ -17,6 +18,8 @@ function useDebounce<T>(value: T, delay = 300): T {
 }
 
 export default function PostList() {
+  const router = useRouter();
+  const [loadingId, setLoadingId] = useState<string | null>(null);
   const dispatch = useAppDispatch();
   const { items, loading, error } = useAppSelector((s) => s.posts);
 
@@ -64,6 +67,11 @@ export default function PostList() {
             <li key={post.id}>
               <Link
                 href={`/posts/${post.id}`}
+                onClick={(e) => {
+                  e.preventDefault();
+                  setLoadingId(post.id);
+                  router.push(`/posts/${post.id}`);
+                }}
                 className="block bg-white dark:bg-gray-800 shadow hover:shadow-lg rounded-lg overflow-hidden transition"
               >
                 <header className="px-6 py-4 border-b dark:border-gray-700">
@@ -87,7 +95,7 @@ export default function PostList() {
                 </p>
                 <div className="px-6 pb-4">
                   <span className="text-blue-600 hover:underline">
-                    Read more →
+                    {loadingId === post.id ? "Loading..." : "Read more →"}
                   </span>
                 </div>
               </Link>
